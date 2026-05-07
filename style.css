@@ -190,8 +190,8 @@ input, textarea { font-family: inherit; }
   z-index: 100;
   padding: 14px 0;
   background: rgba(11, 0, 26, 0.85);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(212, 175, 55, 0.18);
   transition: padding 0.3s var(--ease), background 0.3s var(--ease);
 }
@@ -334,13 +334,14 @@ input, textarea { font-family: inherit; }
 .btn-large { padding: 16px 38px; font-size: 0.86rem; }
 .btn-small { padding: 10px 22px; font-size: 0.72rem; letter-spacing: 0.18em; }
 .btn-gold {
-  background: transparent;
-  color: var(--gold);
+  background: var(--gold);
+  color: var(--text-dark);
   border-color: var(--gold);
   box-shadow: var(--glow-button);
 }
-.btn-gold:hover {
-  background: var(--gold);
+.btn-gold:hover,
+.btn-gold:focus-visible {
+  background: var(--glow);
   color: var(--text-dark);
   border-color: var(--glow);
   transform: translateY(-2px) scale(1.02);
@@ -503,7 +504,8 @@ input, textarea { font-family: inherit; }
   50%      { opacity: 1;   transform: scale(1.05); }
 }
 
-/* The video itself — luminous key art, softly blended at both edges */
+/* The video itself — luminous key art, softly blended at both edges
+   Performance: GPU-isolated, no transform animations to avoid repaints */
 .hero-video {
   position: relative;
   z-index: 2;
@@ -537,17 +539,15 @@ input, textarea { font-family: inherit; }
     rgba(0, 0, 0, 0.85) 90%,
     rgba(0, 0, 0, 0.5) 100%
   );
-  animation: videoFloat 8s ease-in-out infinite;
+  /* Pin to its own GPU compositor layer — sibling animations can't trigger repaints */
+  transform: translateZ(0);
 }
 /* If the video file fails to load, the poster still displays beautifully */
 .hero-video:not([src]),
 .hero-video::-webkit-media-controls {
   background: transparent;
 }
-@keyframes videoFloat {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50%      { transform: translateY(-6px) scale(1.012); }
-}
+/* (videoFloat keyframes removed — was causing constant video repaints) */
 
 /* Hero bleeds directly into next section — no hard seam.
    The video's mask gradient handles the soft transition. */
@@ -588,19 +588,21 @@ input, textarea { font-family: inherit; }
   align-items: center;
   flex-wrap: wrap;
   gap: 14px;
-  margin: 0 0 18px;
+  margin: 22px 0 0;
   justify-content: center;
 }
 .hero-blurb {
-  font-size: 0.98rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.15rem, 2.4vw, 1.45rem);
   color: var(--glow);
   margin: 0 auto;
-  max-width: 540px;
-  line-height: 1.55;
-  letter-spacing: 0.02em;
-  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85);
-  font-style: italic;
-  font-family: var(--font-display);
+  max-width: 620px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 24px rgba(245, 208, 111, 0.35),
+               0 2px 16px rgba(0, 0, 0, 0.85);
 }
 
 /* Visually hidden — preserves SEO/screen-reader title without showing duplicate */
@@ -616,16 +618,16 @@ input, textarea { font-family: inherit; }
   border: 0;
 }
 
-/* Outline CTA variant for "Back to the Collective" */
+/* Outline CTA variant for "Back to the Collective" — solid gold by default */
 .btn-outline {
-  background: transparent;
-  color: var(--gold);
+  background: var(--gold);
+  color: var(--text-dark);
   border: 1.5px solid var(--gold);
   box-shadow: var(--glow-button);
 }
 .btn-outline:hover,
 .btn-outline:focus-visible {
-  background: var(--gold);
+  background: var(--glow);
   color: var(--text-dark);
   border-color: var(--glow);
   transform: translateY(-2px) scale(1.02);
@@ -1416,7 +1418,8 @@ input, textarea { font-family: inherit; }
   }
   .hero-video {
     max-height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
   }
   .hero-aura {
     top: 12%;
@@ -1463,7 +1466,8 @@ input, textarea { font-family: inherit; }
   }
   .hero-video {
     width: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
     max-height: 100%;
   }
   .hero-text {
@@ -1480,7 +1484,6 @@ input, textarea { font-family: inherit; }
     height: 70%;
   }
   .hero-blurb {
-    font-size: 0.92rem;
     max-width: 460px;
   }
   /* Reduce ship clutter on mobile per spec */

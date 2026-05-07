@@ -80,31 +80,36 @@ input, textarea { font-family: inherit; }
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
 /* =================================================================
-   STAR BACKGROUND SYSTEM — layered for depth, fully visible & animated
-   Foreground stars: faster drift, normal scale, premium brightness
-   Background stars: slower drift, larger scale, behind everything
+   STAR BACKGROUND SYSTEM — layered for depth, bulletproof animation
+   Animates background-position (works in all browsers, no transform conflicts)
    ================================================================= */
 .page-bg {
   position: fixed;
   inset: 0;
-  background: url("images/about-stars.png") center/cover no-repeat;
+  background-image: url("images/about-stars.png");
+  background-repeat: repeat;
+  background-size: 1200px auto;
+  background-position: 0 0;
   opacity: 1;
   filter: brightness(1.15) contrast(1.08);
   z-index: -2;
   pointer-events: none;
-  animation: starDrift 80s linear infinite;
-  will-change: transform;
+  animation: starDrift 90s linear infinite;
+  will-change: background-position;
 }
 .page-bg-far {
   z-index: -3;
   opacity: 0.85;
-  background-size: 145% auto;
-  background-position: center 30%;
+  background-size: 1800px auto;
+  background-position: 0 0;
   filter: brightness(1.1) contrast(1.05) blur(0.5px);
-  animation: starDriftFar 200s linear infinite;
+  animation: starDriftFar 220s linear infinite;
 }
 .page-bg-community {
-  background: url("images/community-background.PNG") center/cover no-repeat;
+  background-image: url("images/community-background.PNG");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   opacity: 1;
   animation: none;
   filter: brightness(1.05);
@@ -119,13 +124,16 @@ input, textarea { font-family: inherit; }
   z-index: -1;
   pointer-events: none;
 }
+
+/* Animate the background-position itself —
+   guaranteed to work, can't be blocked by transform overrides */
 @keyframes starDrift {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(-40px, -80px, 0); }
+  from { background-position: 0 0; }
+  to   { background-position: -1200px -800px; }
 }
 @keyframes starDriftFar {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to   { transform: translate3d(60px, -120px, 0) scale(1.05); }
+  from { background-position: 0 0; }
+  to   { background-position: 1800px -1200px; }
 }
 
 /* =================================================================
@@ -507,6 +515,11 @@ input, textarea { font-family: inherit; }
   border-radius: 0;
   margin-top: 2%;
   animation: videoFloat 8s ease-in-out infinite;
+}
+/* If the video file fails to load, the poster still displays beautifully */
+.hero-video:not([src]),
+.hero-video::-webkit-media-controls {
+  background: transparent;
 }
 @keyframes videoFloat {
   0%, 100% { transform: translateY(0) scale(1); }

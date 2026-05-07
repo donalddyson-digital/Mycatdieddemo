@@ -29,7 +29,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=3" />
 
   <script type="application/ld+json">
   {
@@ -130,7 +130,7 @@
         <img src="images/hero-spaceship3.png" class="ship ship-3" alt="" loading="lazy" />
       </div>
 
-      <div class="hero-video-stage" aria-hidden="true">
+      <div class="hero-video-stage">
         <div class="hero-video-glow"></div>
         <video
           class="hero-video"
@@ -140,16 +140,17 @@
           playsinline
           webkit-playsinline
           preload="auto"
-          poster="images/host-main.png">
+          poster="images/host-main.png"
+          aria-label="My Cat Died — A podcast about life, laughter and mental health">
+          <source src="videos/hero-foreground.MP4" type="video/mp4" />
           <source src="videos/hero-foreground.mp4" type="video/mp4" />
+          <source src="videos/hero-foreground.MOV" type="video/mp4" />
         </video>
       </div>
 
       <div class="hero-stage">
         <div class="container">
           <div class="hero-text">
-            <h1 class="visually-hidden">My Cat Died — A podcast about life, laughter &amp; mental health</h1>
-
             <div class="hero-ctas">
               <a href="episodes.html" class="btn btn-gold btn-large">Listen Now</a>
               <a href="https://afterschoolspecialpodcast.com/collective.html" class="btn btn-outline btn-large" target="_blank" rel="noopener">Back to the Collective</a>
@@ -267,6 +268,6 @@
     </div>
   </footer>
 
-  <script src="script.js" defer></script>
+  <script src="script.js?v=3" defer></script>
 </body>
 </html>

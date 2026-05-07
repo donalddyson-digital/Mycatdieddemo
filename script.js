@@ -79,12 +79,30 @@
     reveals.forEach(function (el) { el.classList.add('is-visible'); });
   }
 
-  // ---------- Hero video: ensure autoplay (iOS-safe) ----------
+  // ---------- Hero video: ensure autoplay (iOS-safe) + filename fallback ----------
   var heroVideo = document.querySelector('.hero-video');
   if (heroVideo) {
     heroVideo.muted = true;
     heroVideo.setAttribute('muted', '');
     heroVideo.setAttribute('playsinline', '');
+
+    // If video fails to load any of its sources, try alternate casings as last resort
+    heroVideo.addEventListener('error', function tryFallback() {
+      var fallbacks = [
+        'videos/hero-foreground.mp4',
+        'videos/hero-foreground.MP4',
+        'videos/hero-foreground.MOV',
+        'videos/hero-foreground.mov'
+      ];
+      var idx = parseInt(heroVideo.dataset.fallbackIdx || '0', 10);
+      if (idx >= fallbacks.length) return;
+      heroVideo.dataset.fallbackIdx = (idx + 1).toString();
+      // Remove old sources and try direct src assignment
+      while (heroVideo.firstChild) heroVideo.removeChild(heroVideo.firstChild);
+      heroVideo.src = fallbacks[idx];
+      heroVideo.load();
+    }, true);
+
     var p = heroVideo.play();
     if (p && typeof p.catch === 'function') {
       p.catch(function () { /* autoplay blocked — poster shows */ });

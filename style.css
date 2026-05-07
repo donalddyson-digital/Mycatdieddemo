@@ -350,19 +350,16 @@ input, textarea { font-family: inherit; }
 .btn-glow { box-shadow: var(--glow-button); }
 
 /* =================================================================
-   HERO — CINEMATIC SCENE COMPOSITION
-   Video is part of the atmosphere — visible, luminous, dreamy
-   NO mix-blend-mode: screen (makes video disappear)
+   HERO — pure cinematic video, sized to its natural aspect ratio
+   No flex, no min-height = no top/bottom gaps
    ================================================================= */
 .hero {
   position: relative;
-  padding-top: calc(var(--header-h) + 12px);
-  padding-bottom: 32px;
+  width: 100%;
+  margin-top: var(--header-h);
   overflow: hidden;
-  min-height: clamp(640px, 92vh, 940px);
-  display: flex;
-  align-items: stretch;
   isolation: isolate;
+  background: var(--bg-base);
 }
 
 /* Light atmospheric overlay — never a flat dark wash, never a hard seam */
@@ -380,7 +377,7 @@ input, textarea { font-family: inherit; }
   pointer-events: none;
 }
 
-/* Atmospheric aura — large radial behind the subject (optimized blur) */
+/* Atmospheric aura — large radial behind the subject (perf optimized) */
 .hero-aura {
   position: absolute;
   top: 8%;
@@ -396,12 +393,8 @@ input, textarea { font-family: inherit; }
   filter: blur(28px);
   z-index: 1;
   pointer-events: none;
-  animation: aura-pulse 6s ease-in-out infinite;
+  /* Static — no continuous animation = no continuous repaints */
   transform: translateZ(0);
-}
-@keyframes aura-pulse {
-  0%, 100% { opacity: 0.85; transform: scale(1); }
-  50%      { opacity: 1;    transform: scale(1.03); }
 }
 
 /* Floating ships in hero (foreground layer) */
@@ -425,7 +418,7 @@ input, textarea { font-family: inherit; }
   max-width: 160px;
   min-width: 70px;
   opacity: 0.85;
-  filter: drop-shadow(0 0 16px rgba(245, 208, 111, 0.5));
+  filter: drop-shadow(0 0 14px rgba(245, 208, 111, 0.45));
   animation: ship-drift-1 14s ease-in-out infinite;
 }
 @keyframes ship-drift-1 {
@@ -441,7 +434,7 @@ input, textarea { font-family: inherit; }
   max-width: 130px;
   min-width: 60px;
   opacity: 0.7;
-  filter: drop-shadow(0 0 12px rgba(245, 208, 111, 0.42));
+  filter: drop-shadow(0 0 10px rgba(245, 208, 111, 0.4));
   animation: ship-drift-2 18s ease-in-out infinite;
 }
 @keyframes ship-drift-2 {
@@ -456,7 +449,7 @@ input, textarea { font-family: inherit; }
   max-width: 110px;
   min-width: 50px;
   opacity: 0.62;
-  filter: drop-shadow(0 0 10px rgba(245, 208, 111, 0.4));
+  filter: drop-shadow(0 0 8px rgba(245, 208, 111, 0.4));
   animation: ship-drift-3 22s ease-in-out infinite;
 }
 @keyframes ship-drift-3 {
@@ -466,20 +459,19 @@ input, textarea { font-family: inherit; }
 }
 
 /* =================================================================
-   HERO VIDEO STAGE — full bleed; video dominates upper composition
+   HERO VIDEO STAGE — drives hero height; aspect-ratio = no gaps
    ================================================================= */
 .hero-video-stage {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  width: 100%;
+  /* Aspect ratio matches the video composition — eliminates all gaps */
+  aspect-ratio: 16 / 9;
+  display: block;
   z-index: 2;
-  pointer-events: none;
   overflow: hidden;
 }
 
-/* Glow halo behind video — slightly enlarged for cinematic atmosphere (optimized blur) */
+/* Glow halo behind video (static — no animation perf cost) */
 .hero-video-glow {
   position: absolute;
   width: 78%;
@@ -496,116 +488,79 @@ input, textarea { font-family: inherit; }
   filter: blur(28px);
   z-index: 1;
   pointer-events: none;
-  animation: glowPulse 6s ease-in-out infinite;
   transform: translateZ(0);
 }
-@keyframes glowPulse {
-  0%, 100% { opacity: 0.8; transform: scale(1); }
-  50%      { opacity: 1;   transform: scale(1.05); }
-}
 
-/* The video itself — luminous key art, softly blended at both edges
-   Performance: GPU-isolated, no transform animations to avoid repaints */
+/* The video itself — fills its stage, GPU-isolated, no continuous repaints */
 .hero-video {
-  position: relative;
-  z-index: 2;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;
-  max-height: 100%;
+  height: 100%;
+  z-index: 2;
   object-fit: cover;
-  object-position: center top;
-  opacity: 0.94;
-  filter: brightness(1.22) contrast(1.08) saturate(1.08);
+  object-position: center;
+  opacity: 0.96;
+  filter: brightness(1.18) contrast(1.06) saturate(1.06);
   background: transparent;
   border-radius: 0;
-  /* Feather BOTH edges so the video bleeds into the atmosphere
-     (no blend mode — masks alone give the integration without risk
-     of making the video disappear on any device) */
+  /* Soft fade only at very bottom edge — no top fade since hero abuts nav cleanly */
   -webkit-mask-image: linear-gradient(
     180deg,
-    rgba(0, 0, 0, 0.6) 0%,
-    rgba(0, 0, 0, 0.92) 10%,
-    rgba(0, 0, 0, 1) 22%,
-    rgba(0, 0, 0, 1) 78%,
-    rgba(0, 0, 0, 0.85) 90%,
-    rgba(0, 0, 0, 0.5) 100%
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 88%,
+    rgba(0, 0, 0, 0.7) 100%
   );
   mask-image: linear-gradient(
     180deg,
-    rgba(0, 0, 0, 0.6) 0%,
-    rgba(0, 0, 0, 0.92) 10%,
-    rgba(0, 0, 0, 1) 22%,
-    rgba(0, 0, 0, 1) 78%,
-    rgba(0, 0, 0, 0.85) 90%,
-    rgba(0, 0, 0, 0.5) 100%
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 88%,
+    rgba(0, 0, 0, 0.7) 100%
   );
-  /* Pin to its own GPU compositor layer — sibling animations can't trigger repaints */
+  /* GPU-isolated */
   transform: translateZ(0);
 }
-/* If the video file fails to load, the poster still displays beautifully */
-.hero-video:not([src]),
-.hero-video::-webkit-media-controls {
-  background: transparent;
-}
-/* (videoFloat keyframes removed — was causing constant video repaints) */
-
-/* Hero bleeds directly into next section — no hard seam.
-   The video's mask gradient handles the soft transition. */
 
 /* =================================================================
-   HERO TEXT OVERLAY — minimal UI BELOW the cinematic video
-   The video itself contains the title/logo/tagline artwork
+   HERO CLOSER — tagline + CTAs sit below the video, above the trio
    ================================================================= */
-.hero-stage {
+.hero-closer {
   position: relative;
-  z-index: 10;
-  width: 100%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  align-self: stretch;
-  padding-bottom: 24px;
-  pointer-events: none;
-}
-.hero-stage > .container {
-  pointer-events: auto;
-}
-
-.hero-text {
-  max-width: 680px;
-  margin: 0 auto;
+  z-index: 6;
+  padding: 36px 0 44px;
   text-align: center;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.85);
-  animation: fadeUp 1.4s var(--ease) 0.4s both;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(245, 208, 111, 0.08), transparent 55%);
 }
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+.hero-closer .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
 }
-
+.hero-blurb {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 700;
+  font-size: clamp(1.35rem, 3vw, 1.85rem);
+  color: var(--gold);
+  margin: 0;
+  max-width: 720px;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  text-shadow: 0 0 28px rgba(245, 208, 111, 0.4),
+               0 2px 12px rgba(0, 0, 0, 0.7);
+}
 .hero-ctas {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 14px;
-  margin: 22px 0 0;
+  gap: 16px;
+  margin: 0;
   justify-content: center;
 }
-.hero-blurb {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  font-size: clamp(1.15rem, 2.4vw, 1.45rem);
-  color: var(--glow);
-  margin: 0 auto;
-  max-width: 620px;
-  line-height: 1.5;
-  letter-spacing: 0.01em;
-  text-shadow: 0 0 24px rgba(245, 208, 111, 0.35),
-               0 2px 16px rgba(0, 0, 0, 0.85);
-}
-
-/* Visually hidden — preserves SEO/screen-reader title without showing duplicate */
+/* Visually hidden — accessibility utility (kept for any future use) */
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -1391,8 +1346,6 @@ input, textarea { font-family: inherit; }
   .btn-collective { padding: 8px 14px; font-size: 0.66rem; }
   .brand-text { font-size: 0.92rem; }
 
-  .hero-text { max-width: 540px; }
-  .hero-video-stage { width: 62%; }
   .hero-aura { width: 80%; }
 
   .trio-grid { gap: 18px; }
@@ -1403,23 +1356,8 @@ input, textarea { font-family: inherit; }
 
 /* iPad / tablet ≤1024 */
 @media (max-width: 1024px) {
-  .hero {
-    min-height: clamp(680px, 96vh, 980px);
-    padding-top: 0;
-    padding-bottom: 32px;
-  }
-  /* Video fills stage edge-to-edge; CTAs remain bottom-anchored */
   .hero-video-stage {
-    width: 100%;
-    height: 100%;
-    inset: 0;
-    align-items: stretch;
-    padding-top: 0;
-  }
-  .hero-video {
-    max-height: 100%;
-    object-fit: contain;
-    object-position: center;
+    aspect-ratio: 16 / 10;
   }
   .hero-aura {
     top: 12%;
@@ -1428,10 +1366,7 @@ input, textarea { font-family: inherit; }
     width: 100%;
     height: 70%;
   }
-  .hero-stage {
-    align-self: flex-end;
-    padding-bottom: 24px;
-  }
+  .hero-closer { padding: 32px 0 40px; }
 
   .featured, .proudly, .quote-section,
   .about-section, .episodes, .community-grid-section,
@@ -1451,31 +1386,9 @@ input, textarea { font-family: inherit; }
   .brand img { width: 38px; height: 38px; }
   .brand-text { font-size: 0.86rem; letter-spacing: 0.14em; }
 
-  /* Hero — video dominates upper space, CTAs anchored at bottom */
-  .hero {
-    padding-top: 0;
-    padding-bottom: 24px;
-    min-height: clamp(680px, 95vh, 860px);
-  }
+  /* Hero on mobile — square-ish aspect ratio so video shows fully without dead space */
   .hero-video-stage {
-    width: 100%;
-    height: 82%;
-    inset: 0 0 auto 0;
-    align-items: stretch;
-    padding-top: 0;
-  }
-  .hero-video {
-    width: 100%;
-    object-fit: contain;
-    object-position: center;
-    max-height: 100%;
-  }
-  .hero-text {
-    text-align: center;
-    margin: 0 auto;
-  }
-  .hero-stage {
-    padding-bottom: 18px;
+    aspect-ratio: 4 / 3;
   }
   .hero-aura {
     top: 10%;
@@ -1483,9 +1396,8 @@ input, textarea { font-family: inherit; }
     left: -5%;
     height: 70%;
   }
-  .hero-blurb {
-    max-width: 460px;
-  }
+  .hero-closer { padding: 28px 0 36px; }
+  .hero-closer .container { gap: 20px; }
   /* Reduce ship clutter on mobile per spec */
   .ship-2, .ship-3 { display: none; }
   .ship-1 { width: 18%; min-width: 70px; top: 6%; left: 4%; }
@@ -1598,3 +1510,14 @@ input, textarea { font-family: inherit; }
   }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* =================================================================
+   HOMEPAGE PERF SCOPE — body.is-home only
+   The homepage runs a heavy 2.5MB video. To prevent compositor
+   contention with the video decoder, kill the most expensive
+   continuous animations on this page only. Inner pages keep them.
+   ================================================================= */
+body.is-home .page-bg { animation: none; }
+body.is-home .page-bg-far { animation: none; }
+body.is-home .ambient-ship-a,
+body.is-home .ambient-ship-b { display: none; }

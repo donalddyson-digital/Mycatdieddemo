@@ -80,28 +80,32 @@ input, textarea { font-family: inherit; }
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
 /* =================================================================
-   STAR BACKGROUND SYSTEM — layered for depth, bulletproof animation
-   Animates background-position (works in all browsers, no transform conflicts)
+   STAR BACKGROUND SYSTEM — layered for depth, GPU-composited animation
+   Rewritten: transform-based motion on a 200% oversized layer = paints
+   once, animates entirely on GPU compositor (zero per-frame paint cost).
    ================================================================= */
 .page-bg {
   position: fixed;
-  inset: 0;
+  inset: -50% -50%;
+  width: 200%;
+  height: 200%;
   background-image: url("images/about-stars.png");
   background-repeat: repeat;
   background-size: 1200px auto;
-  background-position: 0 0;
   opacity: 1;
   filter: brightness(1.15) contrast(1.08);
   z-index: -2;
   pointer-events: none;
   animation: starDrift 90s linear infinite;
-  will-change: background-position;
+  will-change: transform;
+  /* Force own GPU compositor layer */
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 .page-bg-far {
   z-index: -3;
   opacity: 0.85;
   background-size: 1800px auto;
-  background-position: 0 0;
   filter: brightness(1.1) contrast(1.05) blur(0.5px);
   animation: starDriftFar 220s linear infinite;
 }
@@ -113,6 +117,10 @@ input, textarea { font-family: inherit; }
   opacity: 1;
   animation: none;
   filter: brightness(1.05);
+  /* Community uses its own static bg — no oversized container needed */
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 .page-overlay {
   position: fixed;
@@ -125,15 +133,14 @@ input, textarea { font-family: inherit; }
   pointer-events: none;
 }
 
-/* Animate the background-position itself —
-   guaranteed to work, can't be blocked by transform overrides */
+/* GPU-composited drift — only transform animates, no paint per frame */
 @keyframes starDrift {
-  from { background-position: 0 0; }
-  to   { background-position: -1200px -800px; }
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-1200px, -800px, 0); }
 }
 @keyframes starDriftFar {
-  from { background-position: 0 0; }
-  to   { background-position: 1800px -1200px; }
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(1800px, -1200px, 0); }
 }
 
 /* =================================================================
@@ -531,6 +538,23 @@ input, textarea { font-family: inherit; }
   text-align: center;
   background:
     radial-gradient(ellipse at 50% 0%, rgba(245, 208, 111, 0.1), transparent 55%);
+}
+/* Atmospheric blend — soft gradient at hero's bottom edge so video
+   transitions seamlessly into the closer section (no hard line) */
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 90px;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg,
+      transparent 0%,
+      rgba(11, 0, 26, 0.4) 60%,
+      var(--bg-base) 100%);
+  z-index: 5;
 }
 .hero-closer .container {
   display: flex;
@@ -1396,8 +1420,8 @@ input, textarea { font-family: inherit; }
     left: -5%;
     height: 70%;
   }
-  .hero-closer { padding: 14px 0 32px; }
-  .hero-closer .container { gap: 18px; }
+  .hero-closer { padding: 0 0 28px; }
+  .hero-closer .container { gap: 16px; }
   /* Reduce ship clutter on mobile per spec */
   .ship-2, .ship-3 { display: none; }
   .ship-1 { width: 18%; min-width: 70px; top: 6%; left: 4%; }

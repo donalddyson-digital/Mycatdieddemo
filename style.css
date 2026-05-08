@@ -502,6 +502,8 @@ input, textarea { font-family: inherit; }
 .hero-video {
   position: absolute;
   inset: 0;
+  display: block;
+  vertical-align: top;
   width: 100%;
   height: 100%;
   z-index: 2;
@@ -1410,9 +1412,16 @@ input, textarea { font-family: inherit; }
   .brand img { width: 38px; height: 38px; }
   .brand-text { font-size: 0.86rem; letter-spacing: 0.14em; }
 
-  /* Hero on mobile — 4:5 portrait, fills viewport substantially, no gap */
+  /* Hero on mobile — 1:1 square, fits subject proportionally, no vacant space */
   .hero-video-stage {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1 / 1;
+  }
+  /* Kill the .hero::after fade on mobile — was creating a visible 90px gap */
+  .hero::after { display: none; }
+  /* Kill the video bottom mask fade on mobile — eliminates ~4% phantom space */
+  .hero-video {
+    -webkit-mask-image: none;
+    mask-image: none;
   }
   .hero-aura {
     top: 10%;
@@ -1494,7 +1503,6 @@ input, textarea { font-family: inherit; }
   .container { padding-left: 14px; padding-right: 14px; }
   .site-header { padding: 10px 0; }
 
-  .hero { min-height: clamp(620px, 88vh, 780px); }
   .hero-ctas { width: 100%; flex-direction: column; align-items: stretch; gap: 12px; }
   .hero-ctas .btn { width: 100%; text-align: center; }
   .platform-icons { justify-content: center; gap: 10px; }

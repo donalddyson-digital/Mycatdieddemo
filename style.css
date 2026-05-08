@@ -1412,7 +1412,7 @@ input, textarea { font-family: inherit; }
   .brand img { width: 38px; height: 38px; }
   .brand-text { font-size: 0.86rem; letter-spacing: 0.14em; }
 
-  /* Hero on mobile — 4:5 portrait, pin video top so title isn't cropped */
+  /* Hero on mobile */
   .hero-video-stage {
     aspect-ratio: 1 / 1;
   }

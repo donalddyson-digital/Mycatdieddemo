@@ -79,25 +79,33 @@
     reveals.forEach(function (el) { el.classList.add('is-visible'); });
   }
 
-  // ---------- Hero video: ensure autoplay (iOS-safe) + filename fallback ----------
-  var heroVideo = document.querySelector('.hero-video');
-  if (heroVideo) {
+  // ---------- Hero video(s): ensure autoplay (iOS-safe) + filename fallback ----------
+  // Two videos coexist (desktop + mobile); CSS shows the right one. Treat each independently.
+  var heroVideos = document.querySelectorAll('.hero-video');
+  heroVideos.forEach(function (heroVideo) {
     heroVideo.muted = true;
     heroVideo.setAttribute('muted', '');
     heroVideo.setAttribute('playsinline', '');
 
-    // If video fails to load any of its sources, try alternate casings as last resort
+    var isMobileVideo = heroVideo.classList.contains('hero-video-mobile');
+
+    // Filename fallback list — different for mobile vs desktop video
+    var fallbacks = isMobileVideo ? [
+      'videos/hero-foregroundmobile.mp4',
+      'videos/hero-foregroundmobile.MP4',
+      'videos/hero-foregroundmobile.MOV',
+      'videos/hero-foregroundmobile.mov'
+    ] : [
+      'videos/hero-foreground.mp4',
+      'videos/hero-foreground.MP4',
+      'videos/hero-foreground.MOV',
+      'videos/hero-foreground.mov'
+    ];
+
     heroVideo.addEventListener('error', function tryFallback() {
-      var fallbacks = [
-        'videos/hero-foreground.mp4',
-        'videos/hero-foreground.MP4',
-        'videos/hero-foreground.MOV',
-        'videos/hero-foreground.mov'
-      ];
       var idx = parseInt(heroVideo.dataset.fallbackIdx || '0', 10);
       if (idx >= fallbacks.length) return;
       heroVideo.dataset.fallbackIdx = (idx + 1).toString();
-      // Remove old sources and try direct src assignment
       while (heroVideo.firstChild) heroVideo.removeChild(heroVideo.firstChild);
       heroVideo.src = fallbacks[idx];
       heroVideo.load();
@@ -105,9 +113,9 @@
 
     var p = heroVideo.play();
     if (p && typeof p.catch === 'function') {
-      p.catch(function () { /* autoplay blocked — poster shows */ });
+      p.catch(function () { /* autoplay blocked — element shows nothing until user interacts */ });
     }
-  }
+  });
 
   // ---------- Subtle mouse parallax for hero scene (desktop only) ----------
   if (window.matchMedia &&

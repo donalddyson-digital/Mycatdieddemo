@@ -1386,9 +1386,9 @@ input, textarea { font-family: inherit; }
   .brand img { width: 38px; height: 38px; }
   .brand-text { font-size: 0.86rem; letter-spacing: 0.14em; }
 
-  /* Hero on mobile — 16:10 matches video natural shape, no extra space */
+  /* Hero on mobile — 4:5 portrait, fills viewport substantially, no gap */
   .hero-video-stage {
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 4 / 5;
   }
   .hero-aura {
     top: 10%;
@@ -1532,4 +1532,18 @@ body.is-home .ambient-ship-b {
 body.is-home .ambient-ship-a,
 body.is-home .ambient-ship-b {
   display: none;
+}
+
+/* =================================================================
+   MOBILE-SPECIFIC HERO VIDEO SWAP
+   Two video elements coexist; CSS shows only the right one per viewport.
+   Default: desktop video visible, mobile video hidden.
+   At ≤768px: mobile video visible, desktop video hidden.
+   This keeps desktop layout/sizing untouched.
+   ================================================================= */
+.hero-video-mobile { display: none; }
+
+@media (max-width: 768px) {
+  .hero-video-desktop { display: none; }
+  .hero-video-mobile  { display: block; }
 }

@@ -1414,10 +1414,12 @@ input, textarea { font-family: inherit; }
 
   /* Hero on mobile — 4:5 portrait, pin video top so title isn't cropped */
   .hero-video-stage {
-    aspect-ratio: 5 / 4;
+    aspect-ratio: 3 / 4;
   }
   .hero-video {
-    object-position: center 18%;
+    object-fit: contain;
+    object-position: center;
+    background: var(--bg-base);
   }
   /* Kill the .hero::after fade on mobile — was creating a visible 90px gap */
   .hero::after { display: none; }

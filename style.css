@@ -1412,9 +1412,12 @@ input, textarea { font-family: inherit; }
   .brand img { width: 38px; height: 38px; }
   .brand-text { font-size: 0.86rem; letter-spacing: 0.14em; }
 
-  /* Hero on mobile — 1:1 square, fits subject proportionally, no vacant space */
+  /* Hero on mobile — 4:5 portrait, pin video top so title isn't cropped */
   .hero-video-stage {
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 5 / 4;
+  }
+  .hero-video {
+    object-position: center 18%;
   }
   /* Kill the .hero::after fade on mobile — was creating a visible 90px gap */
   .hero::after { display: none; }

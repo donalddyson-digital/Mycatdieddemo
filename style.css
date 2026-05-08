@@ -1414,7 +1414,7 @@ input, textarea { font-family: inherit; }
 
   /* Hero on mobile - 4:5 portait, pin video top so title isn't cropped */
   .hero-video-stage {
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 3 / 4;
   }
   .hero-video {
     object-fit: cover;

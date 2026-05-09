@@ -1566,7 +1566,10 @@ body.is-home .ambient-ship-a,
 body.is-home .ambient-ship-b {
   animation: none !important;
 }
-/* Ambient ships hidden on homepage (they're the most viewport-spanning) */
+/* Hide all floating ships on homepage to eliminate compositor contention with video */
+body.is-home .ship-1,
+body.is-home .ship-2,
+body.is-home .ship-3,
 body.is-home .ambient-ship-a,
 body.is-home .ambient-ship-b {
   display: none;
@@ -1729,8 +1732,8 @@ body.is-home .ambient-ship-b {
   position: relative;
   display: block;
   text-align: center;
-  padding: 56px 64px;
-  max-width: 880px;
+  padding: 48px 0;
+  max-width: 720px;
 }
 
 /* Spark accent — small star above and below the quote */
@@ -1757,14 +1760,13 @@ body.is-home .ambient-ship-b {
 .quote-section .container > .quote-spark:first-child { margin-bottom: 18px; }
 .quote-section .container > .quote-spark:last-child  { margin-top: 22px; }
 
-/* Glowing decorative quote marks — absolutely positioned to FRAME the quote
-   without ever overlapping the text. Open mark sits upper-left of the
-   quote block, close mark sits lower-right. */
+/* Glowing decorative quote marks — positioned tight against the text's
+   visual corners so they read as elegant framing, not floating debris. */
 .quote-mark-deco {
   position: absolute;
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: clamp(4rem, 9vw, 6.5rem);
+  font-size: clamp(3rem, 6.5vw, 4.5rem);
   line-height: 1;
   background: linear-gradient(180deg,
     #fff 0%,
@@ -1784,21 +1786,22 @@ body.is-home .ambient-ship-b {
   z-index: 1;
 }
 .quote-mark-deco-open {
-  top: 28px;
-  left: 4px;
+  top: 30px;
+  left: 8%;
 }
 .quote-mark-deco-close {
-  bottom: 28px;
-  right: 4px;
+  bottom: 30px;
+  right: 8%;
   /* Flip the closing mark so its curve mirrors the opening one */
   transform: rotate(180deg);
 }
 
-/* Quote text — generous breathing room from the absolute marks */
+/* Quote text — stays centered with breathing room from the marks */
 .quote-section .big-quote {
   position: relative;
   z-index: 2;
   margin: 0 auto;
+  max-width: 600px;
   text-shadow:
     0 0 18px rgba(245, 208, 111, 0.5),
     0 0 38px rgba(255, 142, 90, 0.18),
@@ -1812,10 +1815,10 @@ body.is-home .ambient-ship-b {
   .deco-line::before { left: calc(50% - 56px); }
   .deco-line::after  { left: calc(50% + 48px); }
   .closer-city { opacity: 0.12; width: 38%; }
-  .quote-section .container { padding: 40px 36px; }
-  .quote-mark-deco { font-size: clamp(3rem, 13vw, 4rem); }
-  .quote-mark-deco-open  { top: 12px; left: 0; }
-  .quote-mark-deco-close { bottom: 12px; right: 0; }
+  .quote-section .container { padding: 36px 16px; max-width: 480px; }
+  .quote-mark-deco { font-size: clamp(2.5rem, 11vw, 3.5rem); }
+  .quote-mark-deco-open  { top: 14px; left: 4%; }
+  .quote-mark-deco-close { bottom: 14px; right: 4%; }
 }
 @media (max-width: 480px) {
   .hero-headline { letter-spacing: 0.03em; }

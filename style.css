@@ -1412,6 +1412,7 @@ input, textarea { font-family: inherit; }
   .brand img { width: 38px; height: 38px; }
   .brand-text { font-size: 0.86rem; letter-spacing: 0.14em; }
 
+  /* Hero on mobile — 4:5 portrait, pin video top so title isn't cropped */
   /* Hero on mobile — 9:12 portrait, pin video top so title isn't cropped */
   .hero-video-stage {
     aspect-ratio: 9 / 12;
@@ -1726,16 +1727,17 @@ body.is-home .ambient-ship-b {
    ================================================================= */
 .quote-section .container {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
+  display: block;
+  text-align: center;
+  padding: 56px 64px;
+  max-width: 880px;
 }
 
-/* Spark accent — glowing star above and below the quote */
+/* Spark accent — small star above and below the quote */
 .quote-spark {
-  display: inline-block;
-  font-size: 1.9rem;
+  display: block;
+  margin: 0 auto;
+  font-size: 1.5rem;
   line-height: 1;
   background: radial-gradient(circle,
     #fff 0%,
@@ -1749,15 +1751,21 @@ body.is-home .ambient-ship-b {
   filter:
     drop-shadow(0 0 10px rgba(245, 208, 111, 0.85))
     drop-shadow(0 0 22px rgba(255, 168, 90, 0.55));
+  position: relative;
+  z-index: 2;
 }
+.quote-section .container > .quote-spark:first-child { margin-bottom: 18px; }
+.quote-section .container > .quote-spark:last-child  { margin-top: 22px; }
 
-/* Glowing decorative quote marks framing the blockquote */
+/* Glowing decorative quote marks — absolutely positioned to FRAME the quote
+   without ever overlapping the text. Open mark sits upper-left of the
+   quote block, close mark sits lower-right. */
 .quote-mark-deco {
-  display: inline-block;
+  position: absolute;
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: clamp(3.5rem, 8vw, 5.5rem);
-  line-height: 0.6;
+  font-size: clamp(4rem, 9vw, 6.5rem);
+  line-height: 1;
   background: linear-gradient(180deg,
     #fff 0%,
     #fceea0 25%,
@@ -1772,12 +1780,25 @@ body.is-home .ambient-ship-b {
     drop-shadow(0 0 28px rgba(255, 142, 90, 0.35));
   margin: 0;
   user-select: none;
+  pointer-events: none;
+  z-index: 1;
 }
-.quote-mark-deco-open  { margin-bottom: -18px; }
-.quote-mark-deco-close { margin-top: -22px; }
+.quote-mark-deco-open {
+  top: 28px;
+  left: 4px;
+}
+.quote-mark-deco-close {
+  bottom: 28px;
+  right: 4px;
+  /* Flip the closing mark so its curve mirrors the opening one */
+  transform: rotate(180deg);
+}
 
-/* Quote text — slightly enhanced glow to sit between the deco marks */
+/* Quote text — generous breathing room from the absolute marks */
 .quote-section .big-quote {
+  position: relative;
+  z-index: 2;
+  margin: 0 auto;
   text-shadow:
     0 0 18px rgba(245, 208, 111, 0.5),
     0 0 38px rgba(255, 142, 90, 0.18),
@@ -1791,8 +1812,10 @@ body.is-home .ambient-ship-b {
   .deco-line::before { left: calc(50% - 56px); }
   .deco-line::after  { left: calc(50% + 48px); }
   .closer-city { opacity: 0.12; width: 38%; }
-  .quote-mark-deco-open  { margin-bottom: -10px; }
-  .quote-mark-deco-close { margin-top: -16px; }
+  .quote-section .container { padding: 40px 36px; }
+  .quote-mark-deco { font-size: clamp(3rem, 13vw, 4rem); }
+  .quote-mark-deco-open  { top: 12px; left: 0; }
+  .quote-mark-deco-close { bottom: 12px; right: 0; }
 }
 @media (max-width: 480px) {
   .hero-headline { letter-spacing: 0.03em; }

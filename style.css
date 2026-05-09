@@ -1417,9 +1417,9 @@ input, textarea { font-family: inherit; }
     aspect-ratio: 9 / 12;
   }
   .hero-video {
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
-    background: var(--bg-base);
+    background: transparent;
   }
   /* Kill the .hero::after fade on mobile — was creating a visible 90px gap */
   .hero::after { display: none; }

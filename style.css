@@ -1412,14 +1412,14 @@ input, textarea { font-family: inherit; }
   .brand img { width: 38px; height: 38px; }
   .brand-text { font-size: 0.86rem; letter-spacing: 0.14em; }
 
-  /* Hero on mobile - 3:4 portait, pin video top so title isn't cropped */
+  /* Hero on mobile — 4:5 portrait, pin video top so title isn't cropped */
   .hero-video-stage {
-    aspect-ratio: 9 / 12;
+    aspect-ratio: 3 / 4;
   }
   .hero-video {
-    object-fit: cover;
+    object-fit: contain;
     object-position: center;
-    background: transparent;
+    background: var(--bg-base);
   }
   /* Kill the .hero::after fade on mobile — was creating a visible 90px gap */
   .hero::after { display: none; }
@@ -1583,4 +1583,218 @@ body.is-home .ambient-ship-b {
 @media (max-width: 768px) {
   .hero-video-desktop { display: none; }
   .hero-video-mobile  { display: block; }
+}
+
+/* =================================================================
+   HOMEPAGE-ONLY: HERO CLOSER POSTER COMPOSITION
+   Cinematic art-deco typography under the hero video
+   ================================================================= */
+.hero-closer {
+  overflow: hidden; /* clip the city flanks */
+}
+
+/* Decorative city silhouettes flanking the text */
+.hero-closer-cities {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+.closer-city {
+  position: absolute;
+  bottom: 0;
+  width: 32%;
+  max-width: 320px;
+  min-width: 160px;
+  opacity: 0.18;
+  filter:
+    grayscale(0.2)
+    drop-shadow(0 -4px 18px rgba(245, 208, 111, 0.18));
+}
+.closer-city-left  { left: -2%; }
+.closer-city-right { right: -2%; transform: scaleX(-1); }
+
+/* Poster block — three stacked lines with deco lines top + bottom */
+.hero-closer-poster {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0 4px;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+/* Art-deco line — geometric thin gold with glowing diamond center */
+.deco-line {
+  display: block;
+  width: min(100%, 480px);
+  height: 14px;
+  position: relative;
+  background:
+    linear-gradient(90deg,
+      transparent 0%,
+      rgba(212, 175, 55, 0.5) 22%,
+      var(--gold) 50%,
+      rgba(212, 175, 55, 0.5) 78%,
+      transparent 100%) center / 100% 1px no-repeat;
+}
+.deco-line::before,
+.deco-line::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  transform: translateY(-50%) rotate(45deg);
+  box-shadow: 0 0 12px rgba(245, 208, 111, 0.7),
+              0 0 22px rgba(245, 208, 111, 0.35);
+}
+.deco-line::before { left: calc(50% - 70px); }
+.deco-line::after  { left: calc(50% + 62px); }
+
+/* Bold cinematic headline — gold gradient + neon glow */
+.hero-headline {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.6rem, 4.4vw, 2.6rem);
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  margin: 0;
+  text-transform: uppercase;
+  text-align: center;
+  background: linear-gradient(180deg,
+    #fceea0 0%,
+    #f5d06f 35%,
+    var(--gold) 60%,
+    #b8932e 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter:
+    drop-shadow(0 0 16px rgba(245, 208, 111, 0.45))
+    drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7));
+}
+
+/* Subline — italic Playfair, warmer tint, sits between headline + blurb */
+.hero-subline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  color: var(--glow);
+  margin: 0;
+  max-width: 640px;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 18px rgba(245, 208, 111, 0.3),
+               0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* Hero-closer container layout */
+.hero-closer .container {
+  position: relative;
+  z-index: 2;
+}
+
+/* =================================================================
+   ART-DECO LINE UPGRADE — section kickers (sitewide, subtle)
+   The `.section-kicker::before/::after` lines now have a tiny
+   diamond accent for an art-deco feel.
+   ================================================================= */
+.section-kicker::before,
+.section-kicker::after {
+  background: linear-gradient(90deg,
+    transparent,
+    var(--gold) 40%,
+    var(--glow) 50%,
+    var(--gold) 60%,
+    transparent);
+  height: 1px;
+  width: 22px;
+  opacity: 0.85;
+  box-shadow: 0 0 8px rgba(245, 208, 111, 0.5);
+}
+
+/* =================================================================
+   QUOTE SECTION ENHANCEMENT — neon spark + glowing quote marks
+   ================================================================= */
+.quote-section .container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Spark accent — glowing star above and below the quote */
+.quote-spark {
+  display: inline-block;
+  font-size: 1.9rem;
+  line-height: 1;
+  background: radial-gradient(circle,
+    #fff 0%,
+    #fceea0 25%,
+    var(--gold) 55%,
+    #c97f3d 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter:
+    drop-shadow(0 0 10px rgba(245, 208, 111, 0.85))
+    drop-shadow(0 0 22px rgba(255, 168, 90, 0.55));
+}
+
+/* Glowing decorative quote marks framing the blockquote */
+.quote-mark-deco {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(3.5rem, 8vw, 5.5rem);
+  line-height: 0.6;
+  background: linear-gradient(180deg,
+    #fff 0%,
+    #fceea0 25%,
+    var(--gold) 55%,
+    #c97f3d 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter:
+    drop-shadow(0 0 14px rgba(245, 208, 111, 0.65))
+    drop-shadow(0 0 28px rgba(255, 142, 90, 0.35));
+  margin: 0;
+  user-select: none;
+}
+.quote-mark-deco-open  { margin-bottom: -18px; }
+.quote-mark-deco-close { margin-top: -22px; }
+
+/* Quote text — slightly enhanced glow to sit between the deco marks */
+.quote-section .big-quote {
+  text-shadow:
+    0 0 18px rgba(245, 208, 111, 0.5),
+    0 0 38px rgba(255, 142, 90, 0.18),
+    0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* Mobile responsive — keep poster legible, scale flanks */
+@media (max-width: 768px) {
+  .hero-closer-poster { gap: 10px; padding: 4px 0; }
+  .deco-line { height: 12px; }
+  .deco-line::before { left: calc(50% - 56px); }
+  .deco-line::after  { left: calc(50% + 48px); }
+  .closer-city { opacity: 0.12; width: 38%; }
+  .quote-mark-deco-open  { margin-bottom: -10px; }
+  .quote-mark-deco-close { margin-top: -16px; }
+}
+@media (max-width: 480px) {
+  .hero-headline { letter-spacing: 0.03em; }
+  .closer-city { opacity: 0.1; width: 40%; }
 }
